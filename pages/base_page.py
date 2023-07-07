@@ -12,7 +12,7 @@ class BasePage:
     def visit_page(self, path=''):
         self.driver.get(f'{self.config.url}/{path}')
 
-    def find_element(self, locator, timeout=10):
+    def find_element(self, locator, timeout=3):
         return WebDriverWait(self.driver, timeout).until(EC.presence_of_element_located((By.CSS_SELECTOR, locator)))
 
     def find_elements(self, locator, timeout=10):
@@ -36,5 +36,16 @@ class BasePage:
     def get_url(self):
         return self.driver.current_url
 
-    def execute_script(self, code):
-        self.driver.execute_script(code)
+    def execute_script(self, *args):
+        self.driver.execute_script(*args)
+
+    def switch_to_frame(self, locator):
+        element = self.find_element(locator)
+        self.driver.switch_to.frame(element)
+
+    def switch_to_default_content(self):
+        self.driver.switch_to.default_content()
+
+    def set_background_color(self, element, color=''):
+        qu = f"arguments[0].style.backgroundColor = '{color}';"
+        self.execute_script(qu, element)
